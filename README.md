@@ -79,6 +79,26 @@ Quando o grafo pausa em `revisao_humana`, responda com uma destas ações:
 > então a URL do túnel dá a qualquer pessoa acesso ao grafo e às suas credenciais Azure. Use só em
 > rede confiável e derrube o túnel ao terminar.
 
+### Para demonstrar ao vivo, use `--no-reload`
+
+```bash
+uv run langgraph dev --no-reload
+```
+
+O watcher do `langgraph dev` vigia também o `.venv/`. Qualquer coisa que reescreva pacotes ali —
+um `uv sync`, um `pip install`, um `uv pip install --upgrade` — dispara uma enxurrada de reloads, e
+**cada reload cancela a execução em voo** com `CancelledError`. O sintoma no Studio é a thread
+travada em `Thread is in a pending state`, com a run reiniciando sem parar.
+
+Se acontecer: cancele a run presa e reinicie sem o watcher.
+
+```bash
+curl -s -X POST "http://127.0.0.1:2024/threads/<thread_id>/runs/<run_id>/cancel?action=rollback"
+```
+
+Note que `interrupted` **não** é erro: é o estado normal de uma thread parada na revisão humana,
+esperando a resposta. Preso mesmo é `busy` sem nenhuma run ativa.
+
 ### Mudou o `.env`? Reinicie o servidor
 
 O `langgraph dev` recarrega **código** automaticamente, mas **não** variáveis de ambiente: o `.env` é

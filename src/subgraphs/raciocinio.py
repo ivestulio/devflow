@@ -52,6 +52,18 @@ def entrada(estado: EstadoDevFlow) -> Literal["triar", "planejar"]:
 
 # --- etapa de triagem --------------------------------------------------------
 
+def _fechar_chamadas(resposta) -> list:
+    """Responde TODA tool_call da resposta com uma ToolMessage.
+
+    A API exige que toda `tool_call` tenha uma mensagem respondendo ao seu
+    `tool_call_id` - inclusive a que entrega a resposta final (`Triagem`/`Plano`),
+    que nao passa pelo no de busca. Sem isto o historico fica com um tool_call em
+    aberto, e o replanejamento da acao `revisar` reenvia esse historico e leva 400:
+    "An assistant message with 'tool_calls' must be followed by tool messages".
+    """
+    return [ToolMessage(content="ok", tool_call_id=c["id"]) for c in resposta.tool_calls]
+
+
 def triar(estado: EstadoDevFlow) -> dict:
     novas = []
     if not estado.msgs_triagem:
@@ -63,7 +75,8 @@ def triar(estado: EstadoDevFlow) -> dict:
     conversa = list(estado.msgs_triagem) + novas
     resposta = modelo().bind_tools([buscar_base_de_conhecimento, Triagem], tool_choice="any").invoke(conversa)
 
-    saida = {"msgs_triagem": novas + [resposta]}
+    saida = {}
+    mensagens = novas + [resposta]
 
     for chamada in resposta.tool_calls:
         if chamada["name"] == "Triagem":
@@ -71,6 +84,10 @@ def triar(estado: EstadoDevFlow) -> dict:
             saida["triagem"] = triagem
             saida["alertas"] = conferir_triagem(triagem, estado.contexto)
 
+    if "triagem" in saida:
+        mensagens += _fechar_chamadas(resposta)
+
+    saida["msgs_triagem"] = mensagens
     return saida
 
 
@@ -95,7 +112,8 @@ def planejar(estado: EstadoDevFlow) -> dict:
     conversa = list(estado.msgs_plano) + novas
     resposta = modelo().bind_tools([buscar_base_de_conhecimento, Plano], tool_choice="any").invoke(conversa)
 
-    saida = {"msgs_plano": novas + [resposta]}
+    saida = {}
+    mensagens = novas + [resposta]
 
     for chamada in resposta.tool_calls:
         if chamada["name"] == "Plano":
@@ -107,6 +125,10 @@ def planejar(estado: EstadoDevFlow) -> dict:
                 plano, estado.issue, estado.contexto
             )
 
+    if "plano" in saida:
+        mensagens += _fechar_chamadas(resposta)
+
+    saida["msgs_plano"] = mensagens
     return saida
 
 

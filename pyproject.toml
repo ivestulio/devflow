@@ -14,7 +14,9 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["langgraph-cli[inmem]>=0.4"]
+# langgraph-api >= 0.11 e exigido pelo Studio para mostrar traces na propria UI
+# (session-name tracing). Sem o piso, o resolvedor pode cair em 0.10.x.
+dev = ["langgraph-cli[inmem]>=0.4", "langgraph-api>=0.11"]
 
 [build-system]
 requires = ["hatchling"]
