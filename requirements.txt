@@ -1,0 +1,12 @@
+# Espelho das dependencias do pyproject.toml, para quem nao usa uv.
+# Instale com: pip install -r requirements.txt
+langgraph>=1.2,<2
+langchain-openai>=1.6,<2
+langchain-core>=1.0
+azure-search-documents>=11.6
+pydantic>=2.7
+pydantic-settings>=2.4
+mlflow>=3
+
+# Para rodar o servidor local (langgraph dev):
+langgraph-cli[inmem]>=0.4

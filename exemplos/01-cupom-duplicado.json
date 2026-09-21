@@ -1,0 +1,16 @@
+{
+  "issue": {
+    "id": "ISSUE-1042",
+    "projeto": "checkout",
+    "autor": "ana.souza",
+    "criada_em": "2026-09-01",
+    "labels": ["cupom", "pricing"],
+    "titulo": "Cupom aplicado duas vezes ao voltar etapa no checkout",
+    "descricao": "Quando a pessoa avanca para a etapa de pagamento e depois volta para a de endereco, o mesmo codigo de cupom e somado outra vez ao total. O desconto aparece dobrado no resumo do pedido e o valor cobrado sai menor que o devido. Reproduzido com o cupom PRIMEIRACOMPRA em tres carrinhos diferentes.",
+    "criterios_aceite": [
+      "O mesmo codigo de cupom nao pode incidir mais de uma vez na mesma cotacao",
+      "O recalculo disparado ao voltar de etapa deve ser coberto por teste automatizado",
+      "O total exibido deve bater com o total cobrado apos qualquer navegacao entre etapas"
+    ]
+  }
+}

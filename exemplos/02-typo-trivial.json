@@ -1,0 +1,14 @@
+{
+  "issue": {
+    "id": "ISSUE-2001",
+    "projeto": "checkout",
+    "autor": "bia.martins",
+    "criada_em": "2026-09-10",
+    "labels": ["ui", "texto"],
+    "titulo": "Corrigir erro de digitacao no botao de finalizar compra",
+    "descricao": "O botao da ultima etapa do checkout exibe 'Finalzar compra' em vez de 'Finalizar compra'. E apenas o rotulo do botao; o comportamento esta correto e nenhum valor e afetado.",
+    "criterios_aceite": [
+      "O botao exibe 'Finalizar compra'"
+    ]
+  }
+}

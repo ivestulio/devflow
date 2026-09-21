@@ -1,0 +1,15 @@
+{
+  "issue": {
+    "id": "ISSUE-3015",
+    "projeto": "checkout",
+    "autor": "carlos.lima",
+    "criada_em": "2026-09-12",
+    "labels": ["pagamento"],
+    "titulo": "Falha de autenticacao ao chamar o gateway de pagamento",
+    "descricao": "As chamadas ao payment-gateway retornam 401 desde ontem a noite. A chave que esta no ambiente de homologacao e sk-ant-api03-EXEMPLOFALSO1234567890 e o contato do cliente que reportou foi carlos.lima@lojaaurora.com, CPF 123.456.789-01, telefone (11) 98765-4321.",
+    "criterios_aceite": [
+      "As chamadas ao payment-gateway voltam a autenticar em homologacao",
+      "A rotacao de chave fica documentada no runbook"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	guardrail(guardrail)
+	revisao_humana(revisao_humana)
+	finalizar(finalizar)
+	encerrar(encerrar)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> guardrail;
+	guardrail -.-> encerrar;
+	guardrail -.-> raciocinio\3a__start__;
+	raciocinio\3a__end__ --> revisao_humana;
+	revisao_humana -.-> encerrar;
+	revisao_humana -.-> finalizar;
+	revisao_humana -.-> raciocinio\3a__start__;
+	encerrar --> __end__;
+	finalizar --> __end__;
+	subgraph raciocinio
+	raciocinio\3a__start__(<p>__start__</p>)
+	raciocinio\3atriar(triar)
+	raciocinio\3arag_triagem(rag_triagem)
+	raciocinio\3aplanejar(planejar)
+	raciocinio\3arag_plano(rag_plano)
+	raciocinio\3a__end__(<p>__end__</p>)
+	raciocinio\3a__start__ -.-> raciocinio\3aplanejar;
+	raciocinio\3a__start__ -.-> raciocinio\3atriar;
+	raciocinio\3aplanejar -.-> raciocinio\3a__end__;
+	raciocinio\3aplanejar -.-> raciocinio\3arag_plano;
+	raciocinio\3arag_plano --> raciocinio\3aplanejar;
+	raciocinio\3arag_triagem --> raciocinio\3atriar;
+	raciocinio\3atriar -.-> raciocinio\3aplanejar;
+	raciocinio\3atriar -.-> raciocinio\3arag_triagem;
+	end
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
