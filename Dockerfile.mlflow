@@ -1,0 +1,10 @@
+# A imagem oficial do MLflow e literalmente um `pip install mlflow` e nada mais.
+# Verificado: nao traz driver de Postgres nem suporte a Azure Blob.
+FROM ghcr.io/mlflow/mlflow:v3.16.1
+
+RUN pip install --no-cache-dir \
+      psycopg2-binary==2.9.10 \
+      azure-storage-blob==12.24.0 \
+      azure-identity==1.19.0
+
+EXPOSE 5000

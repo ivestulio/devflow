@@ -7,3 +7,12 @@ mlruns/
 .langgraph_api/
 .probe/
 mlflow.db
+
+# Terraform
+infra/.terraform/
+infra/terraform.tfstate
+infra/terraform.tfstate.*
+infra/*.tfvars
+!infra/terraform.tfvars.example
+infra/tfplan
+infra/token-producao.sh

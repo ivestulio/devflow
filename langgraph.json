@@ -1,9 +1,14 @@
 {
   "$schema": "https://langgra.ph/schema.json",
-  "dependencies": ["."],
+  "dependencies": [
+    "."
+  ],
   "graphs": {
     "devflow": "./src/graph.py:graph"
   },
   "env": "./.env",
-  "python_version": "3.12"
+  "python_version": "3.12",
+  "auth": {
+    "path": "./src/auth.py:auth"
+  }
 }

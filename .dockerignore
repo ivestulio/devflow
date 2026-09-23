@@ -1,0 +1,38 @@
+# O motivo principal deste arquivo: credenciais reais nao podem entrar no
+# contexto de build. O `az acr build` ja exclui .venv e .git por conta propria,
+# mas nao exclui .env.
+.env
+.env.*
+!.env.example
+
+# 734 MB. O `docker build` local mandaria tudo isso para o daemon.
+.venv/
+.git/
+.gitignore
+
+# Estado local de desenvolvimento, nunca deve chegar na imagem
+.langgraph_api/
+mlruns/
+mlflow.db
+.probe/
+
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Nao sao usados em runtime; mudanca aqui invalidaria o cache de camada a toa
+README.md
+MONITORAMENTO.md
+grafo.mmd
+exemplos
+exemplos/**
+
+# infra/ tem 220 MB por causa do .terraform com o provider azurerm baixado.
+# O padrao com barra no fim ("infra/") NAO foi respeitado pelo empacotador do
+# `az acr build` - o contexto subiu de 1,3 MB para 56 MB. Listar sem barra e
+# com /** cobre os dois matchers.
+infra
+infra/**
+.terraform
+**/.terraform/**
+*.tfstate*

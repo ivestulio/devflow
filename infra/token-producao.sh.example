@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Token de producao do DevFlow. COPIE para token-producao.sh e preencha.
+#
+# Por que num arquivo separado e nao no .env:
+#
+# O .env e o ambiente LOCAL, onde o token deve ficar VAZIO - e isso que permite
+# o LangGraph Studio conectar. Mas o `carregar-env.sh` lia o token justamente do
+# .env, entao depois de esvazia-lo um `terraform apply` mandaria token vazio
+# para a Azure - ABRINDO o endpoint, porque o auth.py agora falha aberto.
+#
+# Isso aconteceu de verdade nesta sessao. A separacao existe para nao repetir.
+#
+#   cp infra/token-producao.sh.example infra/token-producao.sh
+#   # preencha, e entao:
+#   source infra/token-producao.sh && source infra/carregar-env.sh
+#
+# Gere um token com:
+#   python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+
+export TF_VAR_devflow_api_token=""

@@ -1,0 +1,22 @@
+# Copie para terraform.tfvars (que esta no .gitignore) e preencha.
+#
+# As CHAVES nao precisam estar aqui: passe por variavel de ambiente, que nao
+# deixa arquivo no disco. Do diretorio raiz do repositorio:
+#
+#   set -a; source .env; set +a
+#   export TF_VAR_azure_openai_api_key="$AZURE_OPENAI_API_KEY"
+#   export TF_VAR_azure_search_key="$AZURE_SEARCH_KEY"
+#   export TF_VAR_subscription_id="$(az account show --query id -o tsv)"
+#   export TF_VAR_allowed_ip_cidr="$(curl -s https://api.ipify.org)/32"
+
+azure_openai_endpoint = "https://azopenaiaulas.openai.azure.com"
+azure_search_endpoint = "https://azsearchai.search.windows.net"
+
+azure_openai_chat_deployment = "gpt-5.4"
+azure_search_index           = "devflow-kb"
+
+location = "eastus2"
+prefix   = "devflow"
+
+# Exponha a UI do MLflow ao seu IP. O tracing funciona mesmo com false.
+mlflow_public = false

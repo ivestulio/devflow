@@ -227,6 +227,20 @@ src/
 > `from src.x import y`. O servidor do LangGraph carrega `src/graph.py` como módulo sem pacote pai,
 > então import relativo ali falharia.
 
+## Deploy na Azure
+
+A infraestrutura está em [`infra/`](infra/), descrita em Terraform: Container Apps para o agente e
+para o MLflow, registry, Postgres e storage. Leia [`infra/README.md`](infra/README.md) antes de
+aplicar — em especial a seção de segurança, porque o `langgraph dev` **não tem autenticação** e a
+proteção é uma lista de IPs.
+
+```bash
+source infra/carregar-env.sh
+cd infra && terraform init && terraform apply -var="image_tag=<tag>"
+```
+
+Custo aproximado: US$26/mês com o ambiente ocioso.
+
 ## Mapa aula → módulo
 
 | Aula | Tema | Onde está |
