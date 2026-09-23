@@ -1,7 +1,6 @@
 """No de fechamento: monta o dossie."""
 
 from src.observability.logging import log
-from src.observability.metrics import registrar_qualidade
 from src.schemas.dossie import Dossie
 from src.schemas.revisao import DecisaoHumana
 from src.state import EstadoDevFlow
@@ -21,15 +20,6 @@ def finalizar(estado: EstadoDevFlow) -> dict:
         contexto=estado.contexto,
         alertas=estado.alertas,
         revisoes=estado.revisoes,
-    )
-
-    registrar_qualidade(
-        issue=estado.issue,
-        plano=estado.plano,
-        alertas=estado.alertas,
-        fontes=dossie.fontes,
-        revisoes=estado.revisoes,
-        decisao=decisao.acao,
     )
 
     _logger.info("dossie de %s gerado com %d fonte(s)", estado.issue.id, len(dossie.fontes))

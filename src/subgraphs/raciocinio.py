@@ -21,7 +21,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 from langgraph.graph import END, START, StateGraph
 
 from src.guardrails.saida import conferir_plano, conferir_triagem
-from src.observability.tracing import span_recuperacao
+from src.observability.logging import log
 from src.prompts.plano import SISTEMA_PLANO, prompt_plano
 from src.prompts.triagem import SISTEMA_TRIAGEM, prompt_triagem
 from src.schemas.plano import Plano
@@ -153,9 +153,12 @@ def _executar_busca(estado: EstadoDevFlow, mensagens: list, tarefa: str, canal: 
             continue
 
         consulta = chamada["args"]["consulta"]
-        with span_recuperacao(tarefa, consulta) as span:
-            mantidos, descartados = recuperar_seletivo(consulta, chamada["args"].get("tarefa", tarefa))
-            span.registrar(mantidos, descartados)
+        mantidos, descartados = recuperar_seletivo(consulta, chamada["args"].get("tarefa", tarefa))
+        # Log em vez de span do MLflow: o no roda em thread, e um span aberto aqui
+        # viraria um trace solto. O `contexto` devolvido ja entra no trace pelo autolog.
+        log("rag").info(
+            "%s: %r -> %d mantido(s), %d podado(s)", tarefa, consulta[:60], len(mantidos), len(descartados)
+        )
 
         contexto = juntar_sem_duplicar(contexto, mantidos)
         texto = formatar_contexto(mantidos) if mantidos else "Nenhum trecho relevante encontrado."

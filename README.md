@@ -148,11 +148,37 @@ uv run python -c "from src.graph import graph; print(graph.get_graph(xray=1).dra
 **4. Observabilidade** (opcional):
 
 ```bash
-mlflow server --host 127.0.0.1 --port 5000
+uv run mlflow server --host 127.0.0.1 --port 5001 --backend-store-uri sqlite:///mlflow.db
 ```
 
-Cada execução vira um trace com um span por nó, o veredicto do guardrail e o que a poda do RAG
-manteve ou descartou.
+Depois aponte o `.env` e **reinicie o `langgraph dev`** (o `.env` só é lido na subida):
+
+```
+MLFLOW_TRACKING_URI=http://127.0.0.1:5001
+```
+
+Na subida o agente confirma no log: `tracing ativo em http://127.0.0.1:5001`. Se aparecer
+`MLFLOW_TRACKING_URI vazio` ou `nao foi possivel ligar o MLflow`, o tracing está desligado.
+
+Abra `http://127.0.0.1:5001`, escolha o experimento **devflow** e vá em **Traces**. Os detalhes da
+implementação estão em [MONITORAMENTO.md](MONITORAMENTO.md). Cada execução é
+um trace com um span por nó — clique para ver entrada, saída e duração de cada passo, incluindo as
+chamadas ao modelo e o veredicto do guardrail.
+
+> **Use a porta 5001, não a 5000.** No macOS a 5000 é ocupada pelo **AirPlay Receiver**
+> (`ControlCenter`), que responde a tudo com `403` e `Server: AirTunes`. O sintoma é enganoso: um
+> `curl` na porta "funciona", mas o MLflow falha com erro de API. Para conferir quem está lá:
+> `lsof -nP -iTCP:5000 -sTCP:LISTEN`.
+
+**Por que não há span manual no código.** O LangGraph roda cada nó síncrono numa thread, e o
+contexto de span do OpenTelemetry é thread-local: um `mlflow.start_span()` dentro de um nó **não**
+aninha sob o trace da execução — vira um trace solto e separado. O mesmo vale para
+`mlflow.update_current_trace()`. Como o autolog já grava o retorno de cada nó como saída do span,
+`bloqueado`, `violacoes` e o resto já aparecem no trace sem span manual nenhum.
+
+**Aviso `MlflowLangchainTracer has no attribute 'on_interrupt'`.** Incompatibilidade upstream: o
+LangGraph 1.x emite esses callbacks a cada pausa humana e o MLflow 3.16 ainda não os implementa. É
+ruído — o trace é gravado normalmente. O projeto filtra essa mensagem em `observability/logging.py`.
 
 ## Sobre o RAG
 
